@@ -3,24 +3,29 @@ import { useDropzone } from "react-dropzone";
 
 function App() {
   const onDrop = useCallback((files) => {
-    const url = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_NAME}/upload`;
+    const url = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_NAME}/video/upload`;
     console.log(files);
 
     files.forEach(async (file) => {
       const formData = new FormData();
+
       formData.append("file", file);
       formData.append(
         "upload_preset",
         `${process.env.REACT_APP_UPLOAD_PRESET}`,
       );
-
-      const response = await fetch(url, {
-        method: "post",
-        body: formData,
-      });
-      const data = await response.json();
-      console.log(data);
-      console.log("done");
+      let response;
+      try {
+        response = await fetch(url, {
+          method: "post",
+          body: formData,
+        });
+        const data = await response.json();
+        console.log(data);
+        console.log("done");
+      } catch (err) {
+        console.log(err);
+      }
     });
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
